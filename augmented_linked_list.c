@@ -10,6 +10,7 @@ typedef struct Node {
 
 typedef struct LinkedList {
 	int size;
+	struct Node *tail;
 	struct Node *head;
 } LinkedList;
 
@@ -39,6 +40,8 @@ void print_list(LinkedList *list){
 
 	printf("NULL \n");
 }
+
+
 
 
 int main(){

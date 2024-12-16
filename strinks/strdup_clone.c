@@ -7,10 +7,10 @@
 
 char * strdupe(char *s){
 	size_t len = strlen(s);
-	char *copy = malloc(sizeof(len) + 1);
+	char *copy = malloc(len + 1);
 
 	if(copy){
-		memcpy(copy, s, len);
+		memcpy(copy, s, len+1);
 	}
 	return copy;
 }
@@ -21,4 +21,5 @@ int main(){
 
 	baz = strdupe(foo);
 	printf("Copied var: %s\n", baz);
+	free(baz);
 }

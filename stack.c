@@ -28,6 +28,8 @@ int pop(Stack *stacko){
 }
 
 
+
+
 int main(){
 		
 	Stack *stacko = malloc(sizeof(Stack));

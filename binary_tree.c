@@ -39,6 +39,7 @@ Node* insert(Node *root, int data){
 	return root;
 }
 
+// left root right
 void in_order_traversal(Node *root){
 	if(root == NULL){
 		return;
@@ -48,6 +49,27 @@ void in_order_traversal(Node *root){
 	in_order_traversal(root->right);
 }
 
+//root left right
+void pre_order_traversal(Node *root){
+    if(root == NULL){
+        return;
+    }
+    printf("%d ", root->data);
+    pre_order_traversal(root->left);
+    pre_order_traversal(root->right);
+}
+
+// left right root
+void post_order_traversal(Node *root){
+    if(root == NULL){
+        return;
+    }
+
+    pre_order_traversal(root->left);
+    pre_order_traversal(root->right);
+    printf("%d ", root->data);
+}
+
 // In-order traversal that stores values in an array
 void in_order_traversal_returned(Node *root, int* arr, int* index) {
     if (root == NULL) {
@@ -55,14 +77,14 @@ void in_order_traversal_returned(Node *root, int* arr, int* index) {
     }
 
     // Traverse the left subtree
-    in_order_traversal(root->left, arr, index);
+    in_order_traversal(root->left);
 
     // Store the current node's data in the array
     arr[*index] = root->data;
     (*index)++;  // Increment the index for the next element
 
     // Traverse the right subtree
-    in_order_traversal(root->right, arr, index);
+    in_order_traversal(root->right);
 }
 
 int count_nodes(Node* root) {
@@ -81,7 +103,7 @@ int* in_order_to_array(Node* root, int num_nodes) {
     int index = 0;
 
     // Perform in-order traversal and store the values in the array
-    in_order_traversal(root, arr, &index);
+    in_order_traversal(root);
 
     return arr;  // Return the array containing the in-order traversal
 }

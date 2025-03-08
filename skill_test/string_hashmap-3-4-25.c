@@ -1,23 +1,25 @@
-// string hashmap 3/3/24
+// skill test hashmap 3-4-25
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-
 #define TABLE_SIZE 1000
 
-typedef struct HashNode {
+typedef struct HashNode{
 	char *key;
 	int value;
 	struct HashNode *next;
 } HashNode;
 
 typedef struct {
-	// pointer to a big block of allocated memory
 	HashNode *buckets[TABLE_SIZE];
 } HashTable;
 
+void init_table(HashTable *table){
+	for(int i = 0; i < TABLE_SIZE; i++)
+		table->buckets[i] = NULL;
+}
 
 unsigned int hash_func(const char *key){
 	unsigned long hash = 5381;
@@ -27,27 +29,23 @@ unsigned int hash_func(const char *key){
 	return hash % TABLE_SIZE;
 }
 
-void init_table(HashTable *table){
-	for(int i; i<TABLE_SIZE; i++)
-		table->buckets[i] = NULL;
-}
-
-
 HashNode* create_node(const char *key, int value){
+	int index = hash_func(key);
 	HashNode *new_node = malloc(sizeof(HashNode));
 
 	if(!new_node){
 		exit(1);
 	}
+
 	new_node->key = strdup(key);
 	new_node->value = value;
 	new_node->next = NULL;
-	return new_node;
 }
 
 void insert(HashTable *table, const char *key, int value){
-	HashNode *new_node = create_node(key, value);
 	int index = hash_func(key);
+	printf("Key %s is in index %d\n", key, index);
+	HashNode *new_node = create_node(key, value);
 
 	if(!new_node){
 		exit(1);
@@ -70,44 +68,48 @@ int* search(HashTable *table, const char *target){
 	return NULL;
 }
 
-void delete(HashTable *table, const char *target){
-	int index = hash_func(target);
-	HashNode *node = table->buckets[index];
-	HashNode *prev = NULL;
-
-	while(node){
-		if(strcmp(node->key, target) == 0){
-			if(prev){
-				prev->next = node->next;
-			}	
-			else{
-				table->buckets[index] = node->next;
+void print_list(HashTable *table){
+	for(int i=0; i<TABLE_SIZE; i++){
+		if(table->buckets[i]){
+			printf("bucket %i ptr %p\n", i, table->buckets[i]);
+			HashNode *node = table->buckets[i];
+			while(node){
+				printf("key %s, value %d, at index %d\n",
+					node->key, node->value, i);
+				node = node->next;
 			}
 		}
-		prev = node;
-		node = node->next;
-		free(node->key);
-		free(node);			
-		
 	}
-	return NULL;
-} 
+}
+
+void free_list(HashTable *table){
+	for(int i=0; i<TABLE_SIZE; i++){
+		if(table->buckets[i]){
+			HashNode *node = table->buckets[i];
+			while(node){
+				HashNode *temp = node->next;
+				
+				free(node->key);
+				free(node);
+				node = temp;
+			}
+		}
+	}
+}
+
+
+
 
 
 int main(){
 	HashTable table;
 	init_table(&table);
-	insert(&table, "foo", 3);
-	insert(&table, "bar", 13);
-	insert(&table, "baz", 22);
-
+	insert(&table, "baz", 323);
+	insert(&table, "bar", 2293);
+	insert(&table, "boo", 290209);
 	int *res = search(&table, "bar");
 
-	printf("%d\n", *res);
-
-	delete(&table, "bar");
-	res = search(&table, "bar");
-
-	printf("%d\n", *res);
-
+	printf("res %d\n", *res);
+	print_list(&table);
+	free_list(&table);
 }

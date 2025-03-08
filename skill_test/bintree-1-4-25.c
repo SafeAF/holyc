@@ -51,7 +51,7 @@ int search(Node* root, int target){
 	else{
 		return search(root->right, target);
 	}	
-	return 1;
+	
 }
 
 

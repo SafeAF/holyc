@@ -35,6 +35,8 @@ HashNode* create_node(const char *key, int value){
 	return new_node;
 }
 
+
+
 // Init hashtable
 void init_table(HashTable *table){
 	for(int i = 0; i < TABLE_SIZE; i++)

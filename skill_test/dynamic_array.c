@@ -1,5 +1,6 @@
 // holy smokes lets attempt to make a dynamic array w/o
-// cheating off chadgpt's homework
+// cheating off chadgpt's homework using only an English
+// language description from chatgpt
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -43,19 +44,7 @@ void append(Array *ary, int value){
 	ary->size++;
 }
 
-int get(Array *array, int index){
-	if(index >= array->size){
-		exit(1);
-	}
-	return array->data[index];
-}
 
-void set(Array *array, int index, int value){
-		if(index >= array->size){
-		exit(1);
-	}
-	array->data[index] = value;
-}
 
 int get(Array *array, int index){
 	if(index < 0 || index >= array->size){
@@ -79,5 +68,8 @@ int main(){
 	set(array, 1, 20);
 	int ret = get(array, 1);
 	printf("test %d\n", ret);
+
+	free(array->data);
+	free(array);
 	return 0;
 }

@@ -32,6 +32,16 @@ void insert_at_end(Node **head, int data) {
     temp->next = new_node;
 }
 
+void insert_at_head(Node **head, int data){
+    Node *new_node = create_node(data);
+
+    Node *prev = NULL
+
+    
+
+}
+
+
 void print_list(Node *head) {
     Node *temp = head;
     while (temp != NULL) {

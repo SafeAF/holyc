@@ -11,6 +11,9 @@ typedef struct {
 
 // Align to 8 bytes (can change to 16 or sizeof(max_align_t) for stricter alignment)
 size_t align_up(size_t n, size_t alignment) {
+	// ADD alignment to n to push up to next multiple
+	// AND result with alignment to chop off lower bits
+	// to ensure multiple of alignment.
     return (n + alignment - 1) & ~(alignment - 1);
 }
 
@@ -41,6 +44,23 @@ void *pool_alloc(Pool *p, size_t size) {
 
     p->arena_offset += aligned_size;
     return ptr;
+}
+
+
+
+void *arena_alloc_aligned(char *memory, size_t *offset, size_t size, size_t alignment) {
+    uintptr_t raw_addr = (uintptr_t)(memory + *offset);
+
+    // Align the address up
+    uintptr_t aligned_addr = (raw_addr + alignment - 1) & ~(alignment - 1);
+
+    // Compute how much extra space we just jumped
+    size_t padding = aligned_addr - raw_addr;
+
+    // Update the offset with both padding and size
+    *offset += padding + size;
+
+    return (void *)aligned_addr;
 }
 
 int main() {

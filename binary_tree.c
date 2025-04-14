@@ -65,8 +65,8 @@ void post_order_traversal(Node *root){
         return;
     }
 
-    pre_order_traversal(root->left);
-    pre_order_traversal(root->right);
+    post_order_traversal(root->left);
+    post_order_traversal(root->right);
     printf("%d ", root->data);
 }
 

@@ -1,4 +1,101 @@
-# holyc
+# C Mastery Roadmap: From Advanced to Chad-Level
+
+## 🛠️ Phase 1: Mastery of Internals (Advanced Systems Foundations)
+
+### Memory Management
+- [x] Manual `malloc`/`free` basics
+- [x] Write your own dynamic array
+- [x] Use and abuse `memcpy`, `memset`, `memmove`
+- [ ] Write your own malloc/free using a freelist
+- [ ] Add `sbrk()`/`mmap()`-backed pages
+- [ ] Implement slab allocator / buddy system
+- [ ] Add malloc metadata corruption detection
+
+### File & Process Primitives
+- [ ] Learn `mmap`, `munmap`, `mprotect`, `fork`, `execve`, `pipe`, `dup2`
+- [ ] Signal handling: `sigaction`, `sigsetjmp`, `siglongjmp`
+- [ ] IPC: shared memory, message queues, UNIX sockets
+
+---
+
+## ⚙️ Phase 2: Operating System and Runtime Awareness
+
+### Deep Dive Projects
+- [ ] ELF Loader (parse and simulate ELF loading and symbol resolution)
+- [ ] Write a toy libc with `puts`, `malloc`, `printf`
+- [ ] Simulate system calls (via `ptrace` or `LD_PRELOAD`)
+
+### Concepts to Internalize
+- [ ] Calling conventions: x86-64 ABI
+- [ ] Stack frames and prologue/epilogue mechanics
+- [ ] Register calling vs stack calling
+- [ ] Function pointer dispatch and vtable simulation
+- [ ] GOT/PLT, relocations, and dynamic linking
+
+---
+
+## 🧨 Phase 3: Exploitation Awareness and Defense
+
+### Exploit Simulations
+- [x] Use-after-free
+- [ ] Stack overflow → return address overwrite
+- [ ] Heap overflow → fake chunk & tcache poisoning
+- [ ] Format string → arbitrary write/read
+- [ ] ROP chain with `setuid(0); execve("/bin/sh",...)`
+
+### Hardened Defense:
+- [ ] Compile with stack canaries (`-fstack-protector`)
+- [ ] Enable PIE/ASLR (`-fPIE`, `-pie`)
+- [ ] Enable RELRO (`-Wl,-z,relro,-z,now`)
+- [ ] Use Valgrind, AddressSanitizer, GDB, `strace`, `ltrace`
+
+---
+
+## 🖥️ Phase 4: Bare Metal & Embedded
+
+### Low-Level Hardware Work
+- [ ] Write a bootloader in C (link with NASM)
+- [ ] Blink an LED with C on a microcontroller (e.g., STM32 or AVR)
+- [ ] Access hardware registers and I/O memory directly
+- [ ] Use linker scripts to control memory layout
+
+---
+
+## 🧰 Phase 5: Build Real Stuff
+
+### Projects
+- [x] Write a memory allocator ✅
+- [ ] Make a game engine or emulator (CHIP-8, NES, etc.)
+- [ ] Implement a minimal TCP/IP stack (raw sockets or userland)
+- [ ] Write a Forth or Lisp interpreter in C
+- [ ] Build a kernel module or bootable OS with multitasking
+
+---
+
+## 📚 Resources
+
+| Topic | Resource |
+|-------|----------|
+| Linux Internals | *The Linux Programming Interface* by Michael Kerrisk |
+| Linkers/Loaders | *Linkers and Loaders* by John R. Levine |
+| Exploitation | *Hacking: The Art of Exploitation* by Jon Erickson |
+| Embedded | *Embedded C* by Michael Pont |
+| C Idioms | *21st Century C* by Ben Klemens |
+| Tooling | `readelf`, `objdump`, `gdb`, `valgrind`, `ltrace`, `strace` |
+
+---
+
+## 🧙 Phase 6: Final Boss Level – Craft and Combat
+
+- [ ] Build a language that compiles to C
+- [ ] Write a JIT compiler (e.g., for a stack-based VM)
+- [ ] Write a debugger using `ptrace()`
+- [ ] Implement cooperative multitasking/scheduler
+- [ ] Write a file system in userspace with FUSE
+
+---
+
+> "If it ain't got pointers, it's just scripting."
 
 
 Phase 3: Advanced Topics

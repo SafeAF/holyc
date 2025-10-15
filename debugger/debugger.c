@@ -4,11 +4,22 @@
 // objdump -d /bin/ls | grep main
 // run with ./debugger /bin/ls 0xADDRESS
 
+// compile programs with no pie to prevent symbol stripping
+//gcc -no-pie -g -o testprog testprog.c
+
 // future features: 
-    // Attach to a running PID instead of spawning?
-    // Support symbol lookup?
-    // Dump memory regions?
-    // Add single-step mode?
+// Attach to a running PID instead of spawning?
+// Support symbol lookup?
+// Dump memory regions?
+// Add single-step mode?
+// Load ELF symbols
+// Auto-locate main or printf
+// Disassemble bytes around breakpoints
+// Or inject code!
+// use dlysym() to get offsets dynamically
+
+// things to look into for knowledge
+// dif between PIE and non-PIE bins
 
 #include <sys/ptrace.h>
 #include <sys/types.h>
@@ -43,6 +54,8 @@ void run_debugger(pid_t child_pid, unsigned long addr){
 
 	ptrace(PTRACE_POKETEXT, child_pid, (void*)addr,
 			(void *)breakpoint);
+
+
 	ptrace(PTRACE_CONT, child_pid, NULL, NULL);
 	waitpid(child_pid, &wait_status, 0);
 
@@ -51,7 +64,14 @@ void run_debugger(pid_t child_pid, unsigned long addr){
 	struct user_regs_struct regs;
 	ptrace(PTRACE_GETREGS, child_pid, NULL, &regs);
 	printf("RIP = %llx\n", regs.rip);
-
+	printf("RAX:  0x%llx\n", regs.rax);
+	printf("ORIG_RAX: 0x%llx\n", regs.orig_rax);
+	printf("RCX:  0x%llx\n", regs.rcx);
+	printf("RDX:  0x%llx\n", regs.rdx);
+	printf("RSI:  0x%llx\n", regs.rsi);
+	printf("RDI:  0x%llx\n", regs.rdi);
+	printf("RBP:  0x%llx\n", regs.rbp);
+	printf("RBX:  0x%llx\n", regs.rbx);
 	// restore original instruction
 
 	ptrace(PTRACE_POKETEXT, child_pid, (void *)addr,
@@ -61,6 +81,32 @@ void run_debugger(pid_t child_pid, unsigned long addr){
 	ptrace(PTRACE_SETREGS, child_pid, )
 }
 
+// setup for auto resolution of addresses for functions like main
+// get base address of libc from /proc/<pid>/maps
+// also: objdump -d /lib/x86_64-linux-gnu/libc.so.6 | grep "<printf>"
+unsigned long get_libc_base(pid_t pid){
+	// open file
+	char path[64];
+	snprintf(path, sizeof(path), "/proc/%d/maps", pid);
+	FILE *maps = fopen(path, "r");
+	if(!maps){
+		perror("fopen");
+		exit(1);
+	}
+	// pull out 256 byte chunks looking for libc
+	char line[256];
+	while(fgets(line, sizeof(line), maps)){
+		if(strstr(line, "libc") && strstr(line, "r-xp")){
+			unsigned long addr;
+			sscanf(line, "%lx", &addr);
+			fclose(maps);
+			return addr;
+		}
+	}
+	fclose(maps);
+	fprintf(stderr, "Could not find libc base in maps\n");
+	exit(1);
+}
 
 int main(int argc, char *argv[]){
 	if(argc < 3){
@@ -69,7 +115,7 @@ int main(int argc, char *argv[]){
 
 	char *endptr; // used to validate conversion succeeded
 	// base 16 for hex
-	unsigned long addr = strtoul(argv[2], NULL, 16);
+	unsigned long addr = strtoul(argv[2], &endptr, 16);
 
 	if (*endptr != '\0') {
     	fprintf(stderr, "Invalid address: %s\n", argv[2]);
@@ -78,7 +124,7 @@ int main(int argc, char *argv[]){
 
 	pid_t child_pid = fork();
 	if(child_pid == 0){
-		run_debuggee(program);
+		run_debuggee(argv[1]);
 	}
 	else {
 		run_debugger(child_pid, addr);

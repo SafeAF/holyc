@@ -11,10 +11,35 @@ static long cpu_cores_online(void){
         return n;
 }
 
+static void* worker(){
+    long i = 0;
+    for(;;){
+        i++;
+    }
+    return NULL;
+}
+
+
 
 int main(void){
     long nthreads = cpu_cores_online();
     printf("Number of online CPU cores: %ld\n", nthreads);
+
+    
+    pthread_t* threads = malloc(sizeof(pthread_t) * nthreads);
+
+    if(!threads){
+        perror("malloc");
+        return 1;
+    }
+
+    for(long i = 0; i < nthreads; i++){
+        pthread_create(&threads[i], NULL, worker, NULL);
+    }
+
+    pause();
     return 0;
+
+
 }
 
